@@ -128,6 +128,12 @@ def main() -> None:
     run(["git", "-C", str(REPO_ROOT), "push"])
     print("repo manifest committed and pushed")
 
+    # Refresh the hot-update channel against the just-released baseline:
+    # records baseline-assets.json and republishes files.json so freshly
+    # upgraded clients diff to zero downloads.
+    hot = REPO_ROOT / "tools" / "publish_hot.py"
+    run([sys.executable, str(hot), "--apk", str(apk)])
+
 
 if __name__ == "__main__":
     main()
