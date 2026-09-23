@@ -29,6 +29,7 @@ import datetime
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -70,10 +71,11 @@ def main() -> None:
     apk = Path(args.apk)
     if not apk.is_file():
         raise SystemExit(f"APK not found: {apk}")
-    if not args.version_name.startswith("v"):
-        raise SystemExit("version-name must look like vNNN")
-    if int(args.version_name[1:]) != args.version_code:
-        raise SystemExit("version-name and version-code disagree")
+    if args.version_name.startswith("v"):
+        if int(args.version_name[1:]) != args.version_code:
+            raise SystemExit("version-name and version-code disagree")
+    elif not re.fullmatch(r"\d+\.\d+\.\d+", args.version_name):
+        raise SystemExit("version-name must look like vNNN or X.Y.Z")
 
     changelog = args.changelog
     if args.changelog_file:
